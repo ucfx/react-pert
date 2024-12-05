@@ -5,14 +5,14 @@ import dts from "vite-plugin-dts";
 import tsConfigPaths from "vite-tsconfig-paths";
 const appConfig = {
   plugins: [react()],
-  base: "/pert-react/",
+  base: "/react-pert/",
 };
 const packageConfig = {
   plugins: [react(), tsConfigPaths(), dts({ rollupTypes: true })],
   build: {
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
-      name: "pert-react",
+      name: "react-pert",
       fileName: "index",
     },
     rollupOptions: {

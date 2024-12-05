@@ -1,5 +1,5 @@
 {
-  "name": "pert-react",
+  "name": "react-pert",
   "version": "0.0.0-development",
   "type": "module",
   "files": [
@@ -20,10 +20,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/ucfx/pert-react#readme",
+  "homepage": "https://github.com/ucfx/react-pert#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ucfx/pert-react"
+    "url": "https://github.com/ucfx/react-pert"
   },
   "author": {
     "name": "Youcef Hammadi",
@@ -62,8 +62,8 @@
     "react",
     "pert",
     "pert chart",
-    "pert-react",
-    "pert react",
+    "react-pert",
+    "react pert",
     "graph",
     "diagram",
     "chart"
