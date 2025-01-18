@@ -1,0 +1,31 @@
+.arrows {
+  .arrow {
+    fill: transparent;
+    stroke: var(--arrow-stroke-color);
+    stroke-width: var(--arrow-stroke-width);
+    transition: stroke .2s, stroke-width 0.2s, opacity .2s;
+
+    &.critical {
+      stroke: var(--arrow-critical-stroke-color);
+    }
+  }
+
+  &.onHover .arrow {
+    opacity: .3;
+  }
+
+  &.onSelect .arrow {
+    opacity: 0;
+  }
+
+  &.onSelect .arrow,
+  &.onHover .arrow {
+
+    &.hover,
+    &.visible {
+      stroke-width: calc(var(--arrow-stroke-width) + 1);
+      opacity: 1;
+    }
+  }
+
+}

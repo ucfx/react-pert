@@ -1,0 +1,60 @@
+.tasks {
+    .task {
+        user-select: none;
+        transition: filter .2s, opacity .2s;
+
+        text {
+            fill: var(--task-text-color);
+            font-family: var(--task-font-family);
+        }
+
+        rect {
+            transition: stroke-width .2s;
+            stroke: var(--task-stroke-color);
+            stroke-width: var(--task-stroke-width);
+            fill: var(--task-bg);
+
+            &~path {
+                stroke: var(--task-stroke-color);
+            }
+        }
+
+        &.critical rect {
+            fill: var(--task-bg-critical);
+        }
+
+        &:hover {
+            cursor: pointer;
+            filter: brightness(.9);
+
+            rect {
+                stroke-width: var(--task-stroke-hover-width);
+            }
+        }
+
+        &.selected {
+            rect {
+                stroke: var(--task-selected-stroke-color);
+                stroke-width: var(--task-selected-stroke-width);
+            }
+        }
+    }
+
+    &:has(.task.selected) {
+        .task:not(.selected):not(.visible) {
+            opacity: 0.7;
+            filter: brightness(0.6);
+
+            &:hover {
+                cursor: pointer;
+                filter: brightness(.9);
+                opacity: 1;
+
+                rect {
+                    stroke: var(--task-stroke-color);
+                    stroke-linejoin: bevel;
+                }
+            }
+        }
+    }
+}

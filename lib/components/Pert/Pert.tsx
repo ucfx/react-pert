@@ -1,16 +1,17 @@
-import { useEffect } from "react";
-import type { PertProps } from "../../types/global.type";
-import { usePertContext } from "../../context/pertContext.tsx";
+import { InternalPertProvider } from "../../context/pertContext";
+import { PertProps, PertStyles } from "../../types/pert.types";
+import PertChart from "./PertChart";
 
-export default function Pert({ tasks }: PertProps) {
-  const { pertData: pertData, calculatePertResults } = usePertContext();
-
-  useEffect(() => {
-    calculatePertResults(tasks);
-  }, [tasks]);
-
-  useEffect(() => {
-    console.log("data", pertData);
-  }, [pertData]);
-  return <>PertChart</>;
-}
+export const Pert: React.FunctionComponent<PertProps> = ({ styles, ...rest }) => (
+  <InternalPertProvider>
+    <div
+      style={{
+        width: "fit-content",
+        height: "fit-content",
+        boxSizing: "border-box",
+      }}
+    >
+      <PertChart {...rest} styles={styles ?? ({} as PertStyles)} />
+    </div>
+  </InternalPertProvider>
+);

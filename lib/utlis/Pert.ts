@@ -1,47 +1,47 @@
-import { generateKey } from "../helpers/generateKey";
+import { generateKey } from "./generateKey";
 import {
-  TaskType,
-  TaskResultType,
+  TaskInput,
+  Task,
   LevelType,
   LinkType,
-  CriticalPathType,
-} from "../types/global.type";
+  CriticalPath,
+} from "../types/global.types";
 
 class Pert {
   private levels: LevelType;
-  private tasksMap: Map<string, TaskResultType>;
-  private initialData: TaskType[];
+  private tasksMap: Map<string, Task>;
+  private initialData: TaskInput[];
   private links: LinkType[];
-  private criticalPaths: CriticalPathType[];
-  private tasks: TaskResultType[];
+  private criticalPaths: CriticalPath[];
   private lastTaskKey: string;
   private startTaskKey: string;
+  private projectDuration: number;
 
-  constructor(data: TaskType[]) {
+  constructor(data: TaskInput[]) {
     this.initialData = data;
-    this.tasksMap = new Map<string, TaskResultType>();
+    this.tasksMap = new Map<string, Task>();
     this.lastTaskKey = `Finish-${generateKey()}`;
     this.startTaskKey = `Start-${generateKey()}`;
-    this.levels = {};
     this.links = [];
     this.criticalPaths = [];
-    this.tasks = [];
+    this.levels = new Map<number, string[]>();
+    this.projectDuration = 0;
   }
 
   private convertDataToMap() {
-    this.tasksMap = new Map<string, TaskResultType>();
+    this.tasksMap = new Map<string, Task>();
     this.tasksMap.set(this.startTaskKey, {
       key: this.startTaskKey,
       duration: 0,
       text: "Start",
-    } as TaskResultType);
+    } as Task);
     this.initialData.forEach((task, index) => {
       if (this.tasksMap.has(task.key)) throw Error(`Duplicate keys found ${task.key}`);
       this.tasksMap.set(
         task.key,
         (!task.dependsOn || task.dependsOn.length === 0
           ? { ...task, dependsOn: [this.startTaskKey], index }
-          : { ...task, index }) as TaskResultType
+          : { ...task, index }) as Task
       );
     });
   }
@@ -50,9 +50,8 @@ class Pert {
     this.convertDataToMap();
     this.calcLevels();
 
-    let levelKeys = Object.keys(this.levels).map((e) => parseInt(e));
-    levelKeys.forEach((levelKey) => {
-      this.levels[levelKey].forEach((index) => {
+    this.levels.forEach((indices) => {
+      indices.forEach((index) => {
         this.calculateEarlyTimes(index);
       });
     });
@@ -72,30 +71,31 @@ class Pert {
       earlyFinish: lastTask.earlyFinish,
       lateFinish: lastTask.earlyFinish,
       lateStart: lastTask.earlyFinish,
-      level: levelKeys.length,
+      level: this.levels.size,
       critical: true,
       freeFloat: 0,
       totalFloat: 0,
       index: this.tasksMap.size - 1,
     });
-    this.levels[levelKeys.length] = [this.lastTaskKey];
+    this.levels.set(this.levels.size, [this.lastTaskKey]);
 
-    for (let i = levelKeys.length - 1; i >= 0; i--) {
-      this.levels[levelKeys[i]].forEach((index) => {
+    this.projectDuration = lastTask.lateFinish;
+
+    for (const [, indices] of [...this.levels.entries()].reverse()) {
+      indices.forEach((index) => {
         this.calculateLateTimes(index, lastTask.lateFinish);
       });
     }
 
-    levelKeys.forEach((levelKey) => {
-      this.levels[levelKey] = this.levels[levelKey].sort(
-        (a, b) => this.tasksMap.get(a)!.index - this.tasksMap.get(b)!.index
+    this.levels.forEach((indices, key) => {
+      this.levels.set(
+        key,
+        indices.sort((a, b) => this.tasksMap.get(a)!.index - this.tasksMap.get(b)!.index)
       );
     });
-
-    this.tasks = Array.from(this.tasksMap.values());
   }
 
-  private getSuccessors(task: TaskResultType): TaskResultType[] {
+  private getSuccessors(task: Task): Task[] {
     return Array.from(this.tasksMap.values()).filter(
       (t) => t.dependsOn && t.dependsOn.includes(task.key)
     );
@@ -120,13 +120,14 @@ class Pert {
     task.earlyFinish = task.earlyStart + task.duration;
   }
 
-  private calculateLateTimes(k: string, lateFinishLastTask: number) {
+  private calculateLateTimes(k: string, projectDuration: number) {
     const task = this.tasksMap.get(k)!;
     const successors = this.getSuccessors(task);
+    if (successors.length === 0) this.tasksMap.get(this.lastTaskKey)!.dependsOn?.push(k);
 
     let lateFinish =
       successors.length === 0
-        ? lateFinishLastTask
+        ? projectDuration
         : Math.min(...successors.map((s) => s.lateFinish - s.duration));
 
     task.lateFinish = lateFinish;
@@ -136,7 +137,7 @@ class Pert {
     if (!task.critical) {
       task.freeFloat =
         (successors.length === 0
-          ? lateFinishLastTask
+          ? projectDuration
           : Math.min(...successors.map((s) => s.earlyStart))) - task.earlyFinish;
       task.totalFloat = task.lateFinish - task.earlyFinish;
     } else {
@@ -146,11 +147,11 @@ class Pert {
   }
 
   private calcLevels() {
-    this.levels = {};
+    this.levels.clear();
 
     let arr: string[] = []; // To detect circular dependencies
 
-    const calcLevel = (task: TaskResultType) => {
+    const calcLevel = (task: Task) => {
       if (arr.includes(task.key)) {
         throw new Error("Circular dependency detected");
       }
@@ -171,17 +172,23 @@ class Pert {
         });
         task.level = maxLevel;
       }
-      if (!this.levels[task.level]) {
-        this.levels[task.level] = [];
+
+      if (!this.levels.has(task.level)) {
+        this.levels.set(task.level, []);
       }
-      if (!this.levels[task.level].includes(task.key)) {
-        this.levels[task.level].push(task.key);
+
+      const levelArray = this.levels.get(task.level)!;
+
+      if (!levelArray.includes(task.key)) {
+        levelArray.push(task.key);
       }
     };
 
     this.tasksMap.forEach((task) => {
-      arr = [];
-      calcLevel(task);
+      if (task.level === undefined) {
+        arr = [];
+        calcLevel(task);
+      }
     });
   }
 
@@ -224,7 +231,7 @@ class Pert {
   private calcCriticalPaths() {
     this.calcNodeLinks();
 
-    const criticalPaths: CriticalPathType[] = [];
+    const criticalPaths: CriticalPath[] = [];
     const startNodes = this.links.filter(
       (link) =>
         link.critical && link.from === this.startTaskKey && link.to !== this.lastTaskKey
@@ -259,22 +266,26 @@ class Pert {
     this.criticalPaths = criticalPaths;
   }
 
-  getTasks(): TaskResultType[] {
+  getTasks(): Map<string, Task> {
     this.calculatePERT();
-    return this.tasks;
+    return this.tasksMap;
   }
 
-  getCriticalPaths(): CriticalPathType[] {
+  getCriticalPaths(): CriticalPath[] {
     if (this.criticalPaths.length === 0) this.calcCriticalPaths();
     return this.criticalPaths;
   }
 
-  getLevels(): LevelType {
+  getLevels(): Map<number, string[]> {
     return this.levels;
   }
 
   getNodeLinks(): LinkType[] {
     return this.links;
+  }
+
+  getProjectDuration(): number {
+    return this.projectDuration;
   }
 
   solve() {
@@ -283,6 +294,7 @@ class Pert {
       levels: this.getLevels(),
       criticalPaths: this.getCriticalPaths(),
       links: this.getNodeLinks(),
+      projectDuration: this.getProjectDuration(),
     };
   }
 }
