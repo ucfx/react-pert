@@ -13,6 +13,10 @@ This package provides tools to calculate and visualize a PERT (Program Evaluatio
 - :white_check_mark: **PERT Calculator**: Fully functional.
 - :white_check_mark: **PERT Diagram**: Fully functional.
 
+### :computer: Demo
+
+Check out the live demo [here](https://ucfx.github.io/react-pert/).
+
 ---
 
 ## :clipboard: Installation
