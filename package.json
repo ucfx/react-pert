@@ -1,7 +1,8 @@
 {
-  "name": "pert-react",
+  "name": "react-pert",
   "version": "0.0.0-development",
   "type": "module",
+  "license": "MIT",
   "files": [
     "dist",
     "README.md",
@@ -20,10 +21,10 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://github.com/ucfx/pert-react#readme",
+  "homepage": "https://github.com/ucfx/react-pert#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ucfx/pert-react"
+    "url": "https://github.com/ucfx/react-pert"
   },
   "author": {
     "name": "Youcef Hammadi",
@@ -56,14 +57,15 @@
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.8",
     "vite-plugin-dts": "^4.2.4",
+    "vite-plugin-lib-inject-css": "^2.2.1",
     "vite-tsconfig-paths": "^5.0.1"
   },
   "keywords": [
     "react",
     "pert",
     "pert chart",
-    "pert-react",
-    "pert react",
+    "react-pert",
+    "react pert",
     "graph",
     "diagram",
     "chart"
