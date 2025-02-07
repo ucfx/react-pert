@@ -1,4 +1,4 @@
-<h1 align="center">react-pert</h1>
+# react-pert
 
 ## :star2: Overview
 
