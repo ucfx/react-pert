@@ -1,5 +1,12 @@
 # react-pert
 
+<img src="public/cover.jpg" />
+
+[![-](https://img.shields.io/github/stars/ucfx/react-pert?style=for-the-badge&colorA=000000&colorB=6868ff)](https://github.com/ucfx/react-pert/stargazers)
+[![-](https://img.shields.io/npm/v/react-pert?style=for-the-badge&colorA=000000&colorB=6868ff)](https://www.npmjs.com/package/react-pert)
+[![Build Size](https://img.shields.io/bundlephobia/minzip/react-pert?label=bundle%20size&style=for-the-badge&colorA=000000&colorB=6868ff)](https://bundlephobia.com/result?p=react-pert)
+[![Downloads](https://img.shields.io/npm/dt/react-pert.svg?style=for-the-badge&colorA=000000&colorB=6868ff)](https://www.npmjs.com/package/react-pert)
+
 ## :star2: Overview
 
 This package provides tools to calculate and visualize a PERT (Program Evaluation and Review Technique) diagram. It includes the following components and utilities:
