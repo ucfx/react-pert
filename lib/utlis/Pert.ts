@@ -123,7 +123,8 @@ class Pert {
   private calculateLateTimes(k: string, projectDuration: number) {
     const task = this.tasksMap.get(k)!;
     const successors = this.getSuccessors(task);
-    if (successors.length === 0) this.tasksMap.get(this.lastTaskKey)!.dependsOn?.push(k);
+    if (task.key !== this.lastTaskKey && successors.length === 0)
+      this.tasksMap.get(this.lastTaskKey)!.dependsOn?.push(k);
 
     let lateFinish =
       successors.length === 0

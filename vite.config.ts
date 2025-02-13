@@ -6,11 +6,22 @@ import tsConfigPaths from "vite-tsconfig-paths";
 import { libInjectCss } from "vite-plugin-lib-inject-css";
 const appConfig = {
   plugins: [react()],
-  base: "/react-pert/",
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "./src"),
+      "@@": resolve(__dirname, "./"),
+    },
+  },
 };
 const packageConfig = {
-  plugins: [react(), tsConfigPaths(), dts({ rollupTypes: true }), libInjectCss()],
+  plugins: [
+    react(),
+    tsConfigPaths(),
+    dts({ rollupTypes: true, include: ["lib", "src/vite-env.d.ts"] }),
+    libInjectCss(),
+  ],
   build: {
+    copyPublicDir: false,
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
       name: "react-pert",

@@ -1,3 +1,4 @@
+"use client";
 import { InternalPertProvider } from "../../context/pertContext";
 import { PertProps, PertStyles } from "../../types/pert.types";
 import PertChart from "./PertChart";
