@@ -119,7 +119,7 @@ export interface PertStyles {
 
   /**
    * Color of the grid lines in the chart.
-   * @default "#00000030"
+   * @default "#83838350"
    */
   gridColor?: string;
 
