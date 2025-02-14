@@ -6,8 +6,11 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "paths": {
-      "react-pert": ["./lib/main.ts"]
+      "react-pert": ["./lib/main.ts"],
+      "@/*": ["./src/*"],
+      "@@/*": ["./*"]
     },
+    "baseUrl": ".",
 
     /* Bundler mode */
     "moduleResolution": "bundler",

@@ -22,17 +22,19 @@ let externalSetSelectedTask: {
 } | null = null;
 
 export const setSelectedTask = (taskKey: string | null) => {
-  if (externalSetSelectedTask) {
-    if (!taskKey) {
-      externalSetSelectedTask.setter(null);
-    } else if (externalSetSelectedTask.getTask) {
-      const task = externalSetSelectedTask.getTask(taskKey);
-      if (task && externalSetSelectedTask.onSelect) {
-        externalSetSelectedTask.onSelect(task);
-      }
-      externalSetSelectedTask.setter(taskKey);
-    }
+  if (!externalSetSelectedTask) return;
+
+  const { setter, onSelect, getTask } = externalSetSelectedTask;
+
+  if (!taskKey) {
+    setter(null);
+    onSelect?.(null);
+    return;
   }
+
+  const task = getTask?.(taskKey) ?? null;
+  onSelect?.(task);
+  setter(task ? taskKey : null);
 };
 
 export const PertChart: React.FC<PertChartProps> = ({ tasks, onSelect, styles }) => {
@@ -52,6 +54,7 @@ export const PertChart: React.FC<PertChartProps> = ({ tasks, onSelect, styles })
     const tasksHash = JSON.stringify(tasks);
     if (tasksHashRef.current !== tasksHash) {
       calculatePertResults(tasks);
+      setSelectedTask(null);
       tasksHashRef.current = tasksHash;
     }
   }, [tasks, calculatePertResults]);

@@ -13,7 +13,7 @@ export const DEFAULT_COLORS = {
   CRITICAL: "#ff9147",
   TASK_BG: "#aaaeff",
   CHART_BG: "#fff",
-  GRID: "#00000030",
+  GRID: "#83838350",
   TEXT: "#000",
   SELECTED: "#6868ff",
   STROKE: "#615f77",
