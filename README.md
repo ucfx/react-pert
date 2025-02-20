@@ -24,6 +24,8 @@ This package provides tools to calculate and visualize a PERT (Program Evaluatio
 
 Check out the live demo [here](https://ucfx.github.io/react-pert/).
 
+<img src="public/demo.jpg" />
+
 ---
 
 ## :clipboard: Installation
