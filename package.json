@@ -39,8 +39,8 @@
     "semantic-release": "semantic-release"
   },
   "peerDependencies": {
-    "react": "^>=18.3.1",
-    "react-dom": "^>=18.3.1"
+    "react": "*",
+    "react-dom": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",
@@ -78,7 +78,9 @@
     "vite": "^6.1.0",
     "vite-plugin-dts": "^4.5.0",
     "vite-plugin-lib-inject-css": "^2.2.1",
-    "vite-tsconfig-paths": "^5.1.4"
+    "vite-tsconfig-paths": "^5.1.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "keywords": [
     "react",
