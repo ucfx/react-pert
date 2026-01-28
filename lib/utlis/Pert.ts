@@ -41,7 +41,7 @@ class Pert {
         task.key,
         (!task.dependsOn || task.dependsOn.length === 0
           ? { ...task, dependsOn: [this.startTaskKey], index }
-          : { ...task, index }) as Task
+          : { ...task, index }) as Task,
       );
     });
   }
@@ -57,7 +57,7 @@ class Pert {
     });
 
     let lastTask = Array.from(this.tasksMap.values()).reduce((prev, current) =>
-      prev.earlyFinish > current.earlyFinish ? prev : current
+      prev.earlyFinish > current.earlyFinish ? prev : current,
     );
     lastTask.lateFinish = lastTask.earlyFinish;
     lastTask.critical = true;
@@ -90,14 +90,14 @@ class Pert {
     this.levels.forEach((indices, key) => {
       this.levels.set(
         key,
-        indices.sort((a, b) => this.tasksMap.get(a)!.index - this.tasksMap.get(b)!.index)
+        indices.sort((a, b) => this.tasksMap.get(a)!.index - this.tasksMap.get(b)!.index),
       );
     });
   }
 
   private getSuccessors(task: Task): Task[] {
     return Array.from(this.tasksMap.values()).filter(
-      (t) => t.dependsOn && t.dependsOn.includes(task.key)
+      (t) => t.dependsOn && t.dependsOn.includes(task.key),
     );
   }
 
@@ -112,7 +112,7 @@ class Pert {
 
         maxFinishTime = Math.max(
           maxFinishTime,
-          dependencyTask.earlyStart + dependencyTask.duration
+          dependencyTask.earlyStart + dependencyTask.duration,
         );
       });
       task.earlyStart = maxFinishTime;
@@ -226,7 +226,7 @@ class Pert {
       }
     });
 
-    this.links = linkData;
+    this.links = linkData.sort((a, b) => Number(a.critical) - Number(b.critical));
   }
 
   private calcCriticalPaths() {
@@ -235,7 +235,7 @@ class Pert {
     const criticalPaths: CriticalPath[] = [];
     const startNodes = this.links.filter(
       (link) =>
-        link.critical && link.from === this.startTaskKey && link.to !== this.lastTaskKey
+        link.critical && link.from === this.startTaskKey && link.to !== this.lastTaskKey,
     );
 
     startNodes.forEach((startNode) => {
@@ -243,14 +243,15 @@ class Pert {
 
       const findPath = (node: LinkType) => {
         const nodeLinks = this.links.filter(
-          (link) => link.critical && link.from === node.to && link.to !== this.lastTaskKey
+          (link) =>
+            link.critical && link.from === node.to && link.to !== this.lastTaskKey,
         );
         if (nodeLinks.length === 0) {
           criticalPaths.push(
             path.map((p) => ({
               text: this.tasksMap.get(p.to)!.text,
               key: p.to,
-            }))
+            })),
           );
         } else {
           nodeLinks.forEach((nodeLink) => {
