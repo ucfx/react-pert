@@ -226,7 +226,7 @@ class Pert {
       }
     });
 
-    this.links = linkData;
+    this.links = linkData.sort((a, b) => Number(a.critical) - Number(b.critical));
   }
 
   private calcCriticalPaths() {
